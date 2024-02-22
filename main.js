@@ -14,15 +14,15 @@ const pathUnzipped = path.join(__dirname, "unzipped");
 const pathProcessed = path.join(__dirname, "filtered");
 
 IOhandler.unzip(zipFilePath, pathUnzipped)
-		.then(() => {
-				return IOhandler.readDir(pathUnzipped);
-		})
-		.then((images) => {
-				images.forEach((image) => {
-						IOhandler.filter(image, pathProcessed, "grayscale");
-						IOhandler.filter(image, pathProcessed, "sepia");
-				});
-		})
-		.catch((err) => {
-				console.log(err);
-		});
+  .then(() => {
+    return IOhandler.readDir(pathUnzipped);
+  })
+  .then((images) => {
+    images.forEach((image) => {
+      IOhandler.filter(image, pathProcessed, "grayscale");
+      IOhandler.filter(image, pathProcessed, "sepia");
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
