@@ -8,12 +8,12 @@
  */
 
 const yauzl = require("yauzl-promise"),
-		filters = require("./filters.js"),
-		path = require("path"),
-		{ pipeline } = require("stream").promises,
-		{ PNG } = require("pngjs"),
-		fs = require("fs").promises,
-		{ createReadStream, createWriteStream } = require("fs");
+  filters = require("./filters.js"),
+  path = require("path"),
+  { pipeline } = require("stream").promises,
+  { PNG } = require("pngjs"),
+  fs = require("fs").promises,
+  { createReadStream, createWriteStream } = require("fs");
 
 /**
  * Description: decompress file from given pathIn, write to given pathOut
@@ -24,30 +24,30 @@ const yauzl = require("yauzl-promise"),
  */
 
 async function unzip(pathIn, pathOut) {
-		return new Promise(async (resolve, reject) => {
-				const zip = await yauzl.open(pathIn);
-				try {
-						await fs.mkdir(pathOut, { recursive: true });
-						for await (const entry of zip) {
-								if (entry.filename.endsWith(path.sep)) {
-										await fs.mkdir(path.join(pathOut, entry.filename), {
-												recursive: true,
-										});
-								} else {
-										const readStream = await entry.openReadStream();
-										const writeStream = createWriteStream(
-												path.join(pathOut, entry.filename),
-										);
-										await pipeline(readStream, writeStream);
-								}
-						}
-						resolve();
-				} catch (err) {
-						reject(err);
-				} finally {
-						await zip.close();
-				}
-		});
+  return new Promise(async (resolve, reject) => {
+    const zip = await yauzl.open(pathIn);
+    try {
+      await fs.mkdir(pathOut, { recursive: true });
+      for await (const entry of zip) {
+        if (entry.filename.endsWith(path.sep)) {
+          await fs.mkdir(path.join(pathOut, entry.filename), {
+            recursive: true,
+          });
+        } else {
+          const readStream = await entry.openReadStream();
+          const writeStream = createWriteStream(
+            path.join(pathOut, entry.filename),
+          );
+          await pipeline(readStream, writeStream);
+        }
+      }
+      resolve();
+    } catch (err) {
+      reject(err);
+    } finally {
+      await zip.close();
+    }
+  });
 }
 
 /**
@@ -58,20 +58,20 @@ async function unzip(pathIn, pathOut) {
  */
 
 async function readDir(dirPath) {
-		return new Promise(async (resolve, reject) => {
-				try {
-						const files = await fs.readdir(dirPath);
-						let filesArray = [];
-						for (let i = 0; i < files.length; i++) {
-								if (path.extname(files[i]) === ".png") {
-										filesArray.push(path.join(__dirname, "unzipped", files[i]));
-								}
-						}
-						resolve(filesArray);
-				} catch (err) {
-						reject(err);
-				}
-		});
+  return new Promise(async (resolve, reject) => {
+    try {
+      const files = await fs.readdir(dirPath);
+      let filesArray = [];
+      for (let i = 0; i < files.length; i++) {
+        if (path.extname(files[i]) === ".png") {
+          filesArray.push(path.join(__dirname, "unzipped", files[i]));
+        }
+      }
+      resolve(filesArray);
+    } catch (err) {
+      reject(err);
+    }
+  });
 }
 
 /**
@@ -84,38 +84,38 @@ async function readDir(dirPath) {
  * @return {promise}
  */
 const filter = async (pathIn, pathOut, filter) => {
-		return new Promise(async (resolve, reject) => {
-				try {
-						await fs.mkdir(path.join(pathOut, filter), { recursive: true });
-						const fileName = path.basename(pathIn);
-						createReadStream(pathIn)
-								.pipe(
-										new PNG({
-												filterType: 4,
-										}),
-								)
-								.on("parsed", function () {
-										if (filter === "grayscale") {
-												const image = filters.grayscaleFilter(this);
-												image
-														.pack()
-														.pipe(createWriteStream(path.join(pathOut, filter, fileName)));
-										} else if (filter === "sepia") {
-												const image = filters.sepiaFilter(this);
-												image
-														.pack()
-														.pipe(createWriteStream(path.join(pathOut, filter, fileName)));
-										}
-								});
-						resolve();
-				} catch (err) {
-						reject(err);
-				}
-		});
+  return new Promise(async (resolve, reject) => {
+    try {
+      await fs.mkdir(path.join(pathOut, filter), { recursive: true });
+      const fileName = path.basename(pathIn);
+      createReadStream(pathIn)
+        .pipe(
+          new PNG({
+            filterType: 4,
+          }),
+        )
+        .on("parsed", function () {
+          if (filter === "grayscale") {
+            const image = filters.grayscaleFilter(this);
+            image
+              .pack()
+              .pipe(createWriteStream(path.join(pathOut, filter, fileName)));
+          } else if (filter === "sepia") {
+            const image = filters.sepiaFilter(this);
+            image
+              .pack()
+              .pipe(createWriteStream(path.join(pathOut, filter, fileName)));
+          }
+        });
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 module.exports = {
-		unzip,
-		readDir,
-		filter,
+  unzip,
+  readDir,
+  filter,
 };
