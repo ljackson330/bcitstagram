@@ -8,13 +8,13 @@
  *
  */
 
-const yauzl = require('yauzl-promise'),
-		filters = require('./filters.js'),
-		path = require('path'),
-		{ pipeline } = require('stream').promises,
-		{ PNG } = require('pngjs'),
-		fs = require('fs').promises,
-		{ createReadStream, createWriteStream } = require('fs');
+const yauzl = require("yauzl-promise"),
+		filters = require("./filters.js"),
+		path = require("path"),
+		{ pipeline } = require("stream").promises,
+		{ PNG } = require("pngjs"),
+		fs = require("fs").promises,
+		{ createReadStream, createWriteStream } = require("fs");
 
 /**
  * Description: decompress file from given pathIn, write to given pathOut
@@ -64,8 +64,8 @@ async function readDir(dirPath) {
 						const files = await fs.readdir(dirPath);
 						let filesArray = [];
 						for (let i = 0; i < files.length; i++) {
-								if (path.extname(files[i]) === '.png') {
-										filesArray.push(path.join(__dirname, 'unzipped', files[i]));
+								if (path.extname(files[i]) === ".png") {
+										filesArray.push(path.join(__dirname, "unzipped", files[i]));
 								}
 						}
 						resolve(filesArray);
@@ -95,13 +95,13 @@ const filter = async (pathIn, pathOut, filter) => {
 												filterType: 4,
 										}),
 								)
-								.on('parsed', function () {
-										if (filter === 'grayscale') {
+								.on("parsed", function () {
+										if (filter === "grayscale") {
 												const image = filters.grayscaleFilter(this);
 												image
 														.pack()
 														.pipe(createWriteStream(path.join(pathOut, filter, fileName)));
-										} else if (filter === 'sepia') {
+										} else if (filter === "sepia") {
 												const image = filters.sepiaFilter(this);
 												image
 														.pack()

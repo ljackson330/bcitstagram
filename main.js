@@ -8,11 +8,11 @@
  *
  */
 
-const path = require('path');
-const IOhandler = require('./IOhandler');
-const zipFilePath = path.join(__dirname, 'myfile.zip');
-const pathUnzipped = path.join(__dirname, 'unzipped');
-const pathProcessed = path.join(__dirname, 'filtered');
+const path = require("path");
+const IOhandler = require("./IOhandler");
+const zipFilePath = path.join(__dirname, "myfile.zip");
+const pathUnzipped = path.join(__dirname, "unzipped");
+const pathProcessed = path.join(__dirname, "filtered");
 
 IOhandler.unzip(zipFilePath, pathUnzipped)
 		.then(() => {
@@ -20,8 +20,8 @@ IOhandler.unzip(zipFilePath, pathUnzipped)
 		})
 		.then((images) => {
 				images.forEach((image) => {
-						IOhandler.filter(image, pathProcessed, 'grayscale');
-						IOhandler.filter(image, pathProcessed, 'sepia');
+						IOhandler.filter(image, pathProcessed, "grayscale");
+						IOhandler.filter(image, pathProcessed, "sepia");
 				});
 		})
 		.catch((err) => {
