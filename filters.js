@@ -5,7 +5,6 @@
  *
  * Created Date: 2024/02/21
  * Author: Liam Jackson
- *
  */
 
 function grayscaleFilter(image) {
